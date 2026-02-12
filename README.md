@@ -1,2 +1,2 @@
-# sea_battle
+# sea.battle
 Курсова робота
