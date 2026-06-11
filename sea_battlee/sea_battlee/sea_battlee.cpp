@@ -148,8 +148,8 @@ void printRowWithSunk(const char field[FD_SIZE][FD_SIZE], int row, bool isMyFiel
         }
 
         if (isSunkPart && cell == HIT) {
-            setColor(13); // Пурпурний для потоплених
-            cout << "#";  // Спецсимвол для потопленого
+            setColor(13); 
+            cout << "#"; 
         }
         else if (cell == SHIP) {
             if (isMyField && showMyShips) setColor(10);
@@ -280,7 +280,7 @@ void animateShipPlacement(char field[FD_SIZE][FD_SIZE], int x, int y, int size, 
     }
     cout << "] " << (success ? "ГОТОВО" : "НЕМОЖЛИВО") << "\n";
     resetColor();
-    Sleep(500); // Збільшено затримку для читабельності
+    Sleep(500); 
 }
 
 void animateVictory(int winner) {
@@ -751,8 +751,8 @@ void manualPlaceShips(char field[FD_SIZE][FD_SIZE], vector<Ship>& ships) {
 }
 
 int main() {
-    SetConsoleOutputCP(1251); // Windows-1251 для кирилиці
-    setlocale(LC_ALL, "Russian"); // Для коректної роботи з кирилицею
+    SetConsoleOutputCP(1251); 
+    setlocale(LC_ALL, "Russian"); 
     srand(static_cast<unsigned>(time(0)));
     showMainMenu();
     return 0;
