@@ -30,7 +30,7 @@
 - **Мова:** C++
 - **Середовище розробки:** Microsoft Visual Studio
 - **Бібліотеки:**
-  - `iostream`, `windows.h`, `vector`, `string`, `fstream`, `algorithm`, `cstdlib`, `ctime`
+  - `iostream`, `windows.h`, `vector`, `string`, `algorithm`, `cstdlib`, `ctime`
 
 ## 🚀 Як запустити
 1. Завантажте проєкт
