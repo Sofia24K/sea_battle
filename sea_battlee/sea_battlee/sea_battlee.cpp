@@ -2,14 +2,13 @@
 #include <vector>
 #include <string>
 #include <windows.h>
-#include <fstream>
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
 
 using namespace std;
 
-// ==================== КОНСТАНТИ ====================
+//КОНСТАНТИ
 const char EMPTY = '~';
 const char SHIP = 'S';
 const char HIT = 'X';
@@ -17,7 +16,7 @@ const char MISS = '*';
 const int FD_SIZE = 10;
 const char LETT[FD_SIZE] = { 'A','B','C','D','E','F','G','H','I','J' };
 
-// ==================== СТРУКТУРА ====================
+//СТРУКТУРА
 struct Ship {
     int x, y;
     int size;
@@ -29,7 +28,6 @@ struct Ship {
 vector<Ship> player1Ships;
 vector<Ship> player2Ships;
 
-// ==================== FORWARD DECLARATIONS ====================
 void setColor(int color);
 void resetColor();
 void clearScreen();
@@ -50,7 +48,7 @@ void showMainMenu();
 int letterToIndex(char ch);
 bool parseCoordinate(const string& input, int& x, int& y);
 
-// ==================== БАЗОВІ ФУНКЦІЇ ====================
+//БАЗОВІ ФУНКЦІЇ
 void setColor(int color) {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
@@ -63,9 +61,7 @@ void clearScreen() {
     system("cls");
 }
 
-// ==================== НОВІ ФУНКЦІЇ АНІМАЦІЇ ТА ПІДСВІТКИ ====================
-
-// Анімація заголовка "МОРСЬКИЙ БІЙ" з кольорами (тільки на старті)
+//ФУНКЦІЇ АНІМАЦІЇ ТА ПІДСВІТКИ
 void animateSeaBattleTitle() {
     const string title = "  <<<  М О Р С Ь К И Й   Б І Й  >>>  ";
     const int colors[] = { 9, 11, 10, 14, 12, 13, 11, 9 };
@@ -94,7 +90,6 @@ void animateSeaBattleTitle() {
             clearScreen();
         }
     }
-    // Фінальний кадр
     clearScreen();
     setColor(11);
     cout << "\n\n    ";
@@ -112,8 +107,6 @@ void animateSeaBattleTitle() {
     cout << "\n\n";
     Sleep(500);
 }
-
-// Постійний заголовок зверху (спрощений, без проблем з позиціонуванням)
 void printPersistentTitle() {
     setColor(11);
     cout << "======================================================================\n";
@@ -134,14 +127,12 @@ void printWaveLine(int length, int color1, int color2) {
     resetColor();
 }
 
-// Модифікований вивід рядка з підсвіткою потоплених кораблів
 void printRowWithSunk(const char field[FD_SIZE][FD_SIZE], int row, bool isMyField, bool showMyShips,
     const vector<Ship>& ships) {
     cout << "  " << LETT[row] << " |";
     for (int col = 0; col < FD_SIZE; col++) {
         char cell = field[row][col];
 
-        // Перевірити чи це частина потопленого корабля
         bool isSunkPart = false;
         for (const auto& ship : ships) {
             if (ship.sunk) {
@@ -178,8 +169,6 @@ void printRowWithSunk(const char field[FD_SIZE][FD_SIZE], int row, bool isMyFiel
     }
     cout << "|";
 }
-
-// Вивід полів з підсвіткою потоплених кораблів
 void printBothFieldsWithSunk(const char field1[FD_SIZE][FD_SIZE], const char field2[FD_SIZE][FD_SIZE],
     bool showMyShips, const vector<Ship>& ships1, const vector<Ship>& ships2) {
     printHeader();
@@ -194,7 +183,6 @@ void printBothFieldsWithSunk(const char field1[FD_SIZE][FD_SIZE], const char fie
     cout << "\n";
 }
 
-// Анімація вибуху при попаданні
 void animateExplosion(int row, int col, bool isHit) {
     setColor(14);
     cout << "\n    [";
@@ -211,7 +199,6 @@ void animateExplosion(int row, int col, bool isHit) {
     Sleep(100);
 }
 
-// Анімація потоплення корабля
 void animateSinking(const Ship& ship) {
     setColor(13);
     cout << "\n    >>> КОРАБЕЛЬ ПОТОПЛЕНО! <<<\n";
@@ -225,8 +212,6 @@ void animateSinking(const Ship& ship) {
     resetColor();
     Sleep(300);
 }
-
-// Анімація появи корабля на полі
 void animateShipAppear(char field[FD_SIZE][FD_SIZE], int x, int y, int size, bool horizontal) {
     for (int step = 0; step < size; step++) {
         clearScreen();
@@ -262,7 +247,6 @@ void animateShipAppear(char field[FD_SIZE][FD_SIZE], int x, int y, int size, boo
         }
         Sleep(120);
     }
-    // Фінальний блиск
     clearScreen();
     printPersistentTitle();
     cout << "\n";
@@ -287,7 +271,6 @@ void animateShipAppear(char field[FD_SIZE][FD_SIZE], int x, int y, int size, boo
     Sleep(200);
 }
 
-// Анімація розстановки корабля
 void animateShipPlacement(char field[FD_SIZE][FD_SIZE], int x, int y, int size, bool horizontal, bool success) {
     setColor(success ? 10 : 12);
     cout << "\n    [";
@@ -300,7 +283,6 @@ void animateShipPlacement(char field[FD_SIZE][FD_SIZE], int x, int y, int size, 
     Sleep(500); // Збільшено затримку для читабельності
 }
 
-// Анімація перемоги
 void animateVictory(int winner) {
     const string victory = "*** ПЕРЕМОГА ГРАВЦЯ " + to_string(winner) + "! ***";
     const int colors[] = { 14, 12, 10, 11, 13, 14 };
@@ -322,7 +304,6 @@ void animateVictory(int winner) {
         Sleep(200);
     }
 
-    // Фінальний екран
     clearScreen();
     setColor(14);
     cout << "\n\n";
@@ -345,7 +326,7 @@ void animateVictory(int winner) {
 
 
 
-// ==================== ДОПОМІЖНІ ФУНКЦІЇ ====================
+//ДОПОМІЖНІ ФУНКЦІЇ
 int letterToIndex(char ch) {
     char upper = toupper(static_cast<char>(ch));
     if (upper >= 'A' && upper <= 'J') return upper - 'A';
@@ -365,7 +346,7 @@ bool parseCoordinate(const string& input, int& x, int& y) {
     return x != -1 && y >= 0 && y < FD_SIZE;
 }
 
-// ==================== РОЗМІЩЕННЯ ====================
+//РОЗМІЩЕННЯ
 bool canPlaceShip(char field[FD_SIZE][FD_SIZE], int x, int y, int size, bool horizontal) {
     for (int i = 0; i < size; ++i) {
         int cx = x + (horizontal ? 0 : i);
@@ -412,7 +393,7 @@ void placeShipsRandom(char field[FD_SIZE][FD_SIZE], vector<Ship>& ships) {
     }
 }
 
-// ==================== ВИВІД ====================
+//ВИВІД 
 void printHeader() {
     cout << "    ГРАВЕЦЬ 1                  ГРАВЕЦЬ 2\n\n";
 }
@@ -460,7 +441,7 @@ void printBothFields(const char field1[FD_SIZE][FD_SIZE], const char field2[FD_S
     cout << "\n";
 }
 
-// ==================== ЛОГІКА ГРИ ====================
+//ЛОГІКА ГРИ
 bool makeShot(char field[FD_SIZE][FD_SIZE], int x, int y) {
     if (field[x][y] == HIT || field[x][y] == MISS) return false;
     field[x][y] = (field[x][y] == SHIP ? HIT : MISS);
@@ -498,7 +479,7 @@ bool checkIfSunk(char field[FD_SIZE][FD_SIZE], vector<Ship>& ships, int hitX, in
     return false;
 }
 
-// ==================== ГОЛОВНЕ МЕНЮ ====================
+//ГОЛОВНЕ МЕНЮ
 void showRules() {
     clearScreen();
     printPersistentTitle();
@@ -670,7 +651,7 @@ void showMainMenu() {
     }
 }
 
-// ==================== РУЧНЕ РОЗМІЩЕННЯ ====================
+//РУЧНЕ РОЗМІЩЕННЯ
 void manualPlaceShips(char field[FD_SIZE][FD_SIZE], vector<Ship>& ships) {
     ships.clear();
     int shipSizes[] = { 4,3,2,1 };
@@ -769,7 +750,6 @@ void manualPlaceShips(char field[FD_SIZE][FD_SIZE], vector<Ship>& ships) {
     cin.get();
 }
 
-// ==================== MAIN ====================
 int main() {
     SetConsoleOutputCP(1251); // Windows-1251 для кирилиці
     setlocale(LC_ALL, "Russian"); // Для коректної роботи з кирилицею
